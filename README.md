@@ -17,6 +17,8 @@ $ CC=/path/to/clang CXX=/path/to/clang++ ./buildAll.sh
 
 ## Memory Sanitizer (Clang only)
 
+## Undefined Behavior Sanitizer
+
 ## References:
 Code examples taken from:
 - https://github.com/google/sanitizers/wiki/AddressSanitizer
