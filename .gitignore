@@ -1,0 +1,3 @@
+# Ignore build directories for any sanitizer type
+build_*
+
