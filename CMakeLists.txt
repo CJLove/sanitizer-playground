@@ -16,8 +16,20 @@ if(isMultiConfig)
     if(NOT "Tsan" IN_LIST CMAKE_CONFIGURATION_TYPES)
         list(APPEND CMAKE_CONFIGURATION_TYPES Tsan)
     endif()
+
+    if(NOT "Lsan" IN_LIST CMAKE_CONFIGURATION_TYPES)
+        list(APPEND CMAKE_CONFIGURATION_TYPES Lsan)
+    endif()
+
+    if(NOT "Msan" IN_LIST CMAKE_CONFIGURATION_TYPES)
+        list(APPEND CMAKE_CONFIGURATION_TYPES Msan)
+    endif()
+
+    if(NOT "UBsan" IN_LIST CMAKE_CONFIGURATION_TYPES)
+        list(APPEND CMAKE_CONFIGURATION_TYPES UBsan)
+    endif()
 else()
-    set(allowedBuildTypes Asan Tsan Debug Release RelWithDebInfo MinSizeRel)
+    set(allowedBuildTypes Asan Tsan Lsan Msan UBsan Debug Release RelWithDebInfo MinSizeRel)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${allowedBuildTypes}")
 
     if(CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE IN_LIST allowedBuildTypes)
@@ -39,7 +51,7 @@ set(CMAKE_EXE_LINKER_FLAGS_ASAN
 
 set(CMAKE_SHARED_LINKER_FLAGS_ASAN
     "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} -fsanitize=address" CACHE STRING
-    "Linker lags to be used to create shared libraries for Asan build type." FORCE)
+    "Linker flags to be used to create shared libraries for Asan build type." FORCE)
 
 set(CMAKE_C_FLAGS_TSAN
     "${CMAKE_C_FLAGS_DEBUG} -g -O0 -fsanitize=thread" CACHE STRING
@@ -55,7 +67,48 @@ set(CMAKE_EXE_LINKER_FLAGS_TSAN
 
 set(CMAKE_SHARED_LINKER_FLAGS_TSAN
     "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} -fsanitize=thread" CACHE STRING
-    "Linker lags to be used to create shared libraries for Tsan build type." FORCE)
+    "Linker flags to be used to create shared libraries for Tsan build type." FORCE)
 
-add_subdirectory(tsan )
+# LeakSanitizer
+set(CMAKE_C_FLAGS_LSAN
+    "-fsanitize=leak -fno-omit-frame-pointer -g -O0"
+    CACHE STRING "Flags used by the C compiler during LeakSanitizer builds."
+    FORCE)
+set(CMAKE_CXX_FLAGS_LSAN
+    "-fsanitize=leak -fno-omit-frame-pointer -g -O0"
+    CACHE STRING "Flags used by the C++ compiler during LeakSanitizer builds."
+    FORCE)
+
+# MemorySanitizer
+set(CMAKE_C_FLAGS_MSAN
+    "-fsanitize=memory -fno-optimize-sibling-calls -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer -g -O0"
+    CACHE STRING "Flags used by the C compiler during MemorySanitizer builds."
+    FORCE)
+set(CMAKE_CXX_FLAGS_MSAN
+    "-fsanitize=memory -fno-optimize-sibling-calls -fsanitize-memory-track-origins=2 -fno-omit-frame-pointer -g -O0"
+    CACHE STRING "Flags used by the C++ compiler during MemorySanitizer builds."
+    FORCE)
+
+# UndefinedBehaviour
+set(CMAKE_C_FLAGS_UBSAN
+    "-fsanitize=undefined"
+    CACHE STRING "Flags used by the C compiler during UndefinedBehaviourSanitizer builds."
+    FORCE)
+set(CMAKE_CXX_FLAGS_UBSAN
+    "-fsanitize=undefined"
+    CACHE STRING "Flags used by the C++ compiler during UndefinedBehaviourSanitizer builds."
+    FORCE)
+
+set(CMAKE_EXE_LINKER_FLAGS_UBSAN
+    "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} -fsanitize=undefined" CACHE STRING
+    "Linker flags to be used to create executables for UBsan build type." FORCE)
+
+set(CMAKE_SHARED_LINKER_FLAGS_ASAN
+    "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} -fsanitize=undefined" CACHE STRING
+    "Linker flags to be used to create shared libraries for UBsan build type." FORCE)
+
+add_subdirectory(tsan)
 add_subdirectory(asan)
+add_subdirectory(lsan)
+add_subdirectory(msan)
+add_subdirectory(ubsan)

@@ -3,13 +3,10 @@ Example code demonstrating categories of errors detected by gcc/clang sanitizers
 
 ## Building with CMake
 ```bash
-$ mkdir build_asan; cd build_asan
-$ cmake -DCMAKE_BUILD_TYPE=Asan ..
-$ make
+$ ./buildAll.sh
 
-$ mkdir build_tsan; cd build_tsan
-$ cmake -DCMAKE_BULID_TYPE=Tsan ..
-$ make
+# Override compilers
+$ CC=/path/to/clang CXX=/path/to/clang++ ./buildAll.sh
 ```
 
 ## Address Sanitizer
@@ -26,6 +23,8 @@ Code examples taken from:
 - https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer
 - https://github.com/google/sanitizers/wiki/ThreadSanitizerCppManual
 - https://github.com/google/sanitizers/wiki/MemorySanitizer
+- https://developers.redhat.com/blog/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan
+
 
 CMake support for sanitizer builds:
 - http://www.stablecoder.ca/2018/02/01/analyzer-build-types.html
